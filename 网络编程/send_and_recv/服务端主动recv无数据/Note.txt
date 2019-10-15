@@ -1,0 +1,3 @@
+1.服务端recv，ret < 0;
+s/c正常建立连接
+erro = EAGAIN
