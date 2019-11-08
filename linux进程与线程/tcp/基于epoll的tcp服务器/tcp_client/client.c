@@ -59,7 +59,7 @@ void* input_poll(void *arg)
         }
 
         if (poll_fd[0].revents == POLLIN){
-            char buf[64];
+            char buf[2048] = {0};
             //文件描述符存在(0、１、2), 0与进程的标准输入相关联，
             //１与进程的标准输出相关联，2与进程的标准错误输出相关联
             ret = read(0,buf,sizeof(buf)-1);
