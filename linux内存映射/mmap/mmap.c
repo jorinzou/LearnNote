@@ -4,32 +4,39 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
+
+#define FILE_SIZE 100*1024*1024
 
 void file_mmap(void)
 {
-	int fd = open("./test.txt", O_RDWR|O_CREAT, 0664);
+	int fd = open("./test.txt", O_RDWR|O_CREAT|O_TRUNC, 0664);
 	if (fd < 0) {
 		perror("open failed");
 		return;
 	}
-
-	//把文件大小限制为5000个字节
-	ftruncate(fd, 5000);
-
-	char *p = mmap(NULL, 4*1024, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-	if (NULL == p) {
+	
+	ftruncate(fd,FILE_SIZE);
+	close(fd);
+	fd = open("./test.txt",O_RDWR);
+	char *mfd = mmap(NULL, FILE_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+	if (NULL == mfd) {
 		perror("mmap");
 		return;
 	}
 	close(fd);
-	printf("%s\n",p);
-	#if 1
-	*(++p) = 'b';
-	*(++p) = 'c';
-	*(++p) = 'd';
-	#endif
-	printf("%s\n",p);
-	munmap(p, 4*1024);
+
+	char buf[1025] = {"test"};
+	int len = FILE_SIZE;
+	char *p = mfd;
+	while(len > 0){
+		memcpy(p,buf,strlen(buf));
+		p+=strlen(buf);
+		len-=strlen(buf);
+	}
+	printf("end\n");
+	getchar();
+	munmap(mfd, FILE_SIZE);
 }
 
 int main(void)
