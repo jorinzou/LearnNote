@@ -25,7 +25,7 @@ int UnicastInit(void)
 	struct sockaddr_in addr;
     memset((void*) &addr, 0, sizeof(struct sockaddr_in));
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = inet_addr("172.16.8.168");
+    addr.sin_addr.s_addr = inet_addr("172.16.2.175");
     addr.sin_port = htons(9090);//服务端端口
     int ret = bind(Unicastfd, (struct sockaddr*) &addr, sizeof(addr));
     if (ret < 0){
@@ -55,9 +55,11 @@ void UnicastReceiveData(void)
 	ret = recvfrom(Unicastfd,RevBuf,1024,MSG_DONTWAIT/*非阻塞，没有数据可读立即返回*/,(struct sockaddr*)&addr,&len);
     DEBUG_INFO("ip:%s,port:%d,buf:%s",inet_ntoa(addr.sin_addr),ntohs(addr.sin_port),RevBuf);
 	
+#if 0
 	memset(RevBuf,0,1024);
 	sprintf(RevBuf,"%s,%d",inet_ntoa(addr.sin_addr),count++);
 	UnicastSend(RevBuf,strlen(RevBuf),&addr);
+#endif
 }
 
 /*udp服务处理线程*/

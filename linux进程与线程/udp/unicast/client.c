@@ -76,13 +76,14 @@ int main(void)
 	
 	while(1){
 		static int count = 10000;
-		char buf[1024] = {0};
+		char buf[3000];
+		memset(buf,sizeof(buf),1);
 		sprintf(buf,"%d",count++);
 		struct sockaddr_in addr;
 		memset((void*) &addr, 0, sizeof(struct sockaddr_in));
 		addr.sin_family = AF_INET;
 		//服务端地址
-		addr.sin_addr.s_addr = inet_addr("172.16.8.168");
+		addr.sin_addr.s_addr = inet_addr("172.16.2.175");
 		//服务端端口
 		addr.sin_port = htons(9090);
 		int a = 0;
